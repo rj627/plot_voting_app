@@ -19,7 +19,8 @@
         const SHEETS_CONFIG = {
             apiKey: 'AIzaSyCZ9CZThBs7qxr9Yr9q5pfiqMdqwI_gJCY',
             spreadsheetId: '1tn0vdg--f4Xtc6aJZ9vl7wJiEOW0c9P841kzKxEN8NQ',
-            range: 'Votes!A:F'
+            range: 'Votes!A:F',
+            appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyZxN0ua40rXKyb0Hqt8FV6ifVcZ7OyFrmMqRqwt81S_U1TMpCsa6_O9pTtTMPKoDqd7w/exec'
         };
 
         // Lucide icons as inline SVG components
@@ -181,34 +182,25 @@
                 try {
                     const plot = plots[currentIndex];
                     
-                    // Prepare the data to append
+                    // Prepare the data
                     const timestamp = new Date().toISOString();
-                    const rowData = [
-                        plot.id,
-                        userName,
-                        vote === 'yes' ? 'Yes' : vote === 'no' ? 'No' : 'Skip',
-                        plot.filename,
-                        timestamp,
-                        `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.spreadsheetId}/edit`
-                    ];
+                    const voteData = {
+                        plotId: plot.id,
+                        voter: userName,
+                        vote: vote === 'yes' ? 'Yes' : vote === 'no' ? 'No' : 'Skip',
+                        filename: plot.filename,
+                        timestamp: timestamp
+                    };
 
-                    // Append to Google Sheets
-                    const response = await fetch(
-                        `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.spreadsheetId}/values/${SHEETS_CONFIG.range}:append?valueInputOption=RAW&key=${SHEETS_CONFIG.apiKey}`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                values: [rowData]
-                            })
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error('Failed to save vote');
-                    }
+                    // Send to Apps Script
+                    const response = await fetch(SHEETS_CONFIG.appsScriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',  // Important for Apps Script
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(voteData)
+                    });
 
                     // Update local state
                     const updatedPlots = [...plots];

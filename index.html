@@ -14,7 +14,7 @@
     
     <script type="text/babel">
         const { useState, useEffect } = React;
-        
+
         // Google Sheets Configuration
         const SHEETS_CONFIG = {
             apiKey: 'AIzaSyCZ9CZThBs7qxr9Yr9q5pfiqMdqwI_gJCY',
@@ -156,7 +156,7 @@
                     for (let i = 1; i <= 1000; i++) {
                         plotsMap[i] = {
                             id: i,
-                            filename: `plot_${String(i).padStart(4, '0')}.png`,
+                            filename: `plot_${String(i).padStart(4, '0')}`,
                             votes: { yes: [], no: [] }
                         };
                     }

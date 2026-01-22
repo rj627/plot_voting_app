@@ -211,28 +211,23 @@
                     
                     // Prepare the data to append
                     const timestamp = new Date().toISOString();
-                    const rowData = [
-                        plot.id,
-                        userName,
-                        vote === 'yes' ? 'Yes' : vote === 'no' ? 'No' : 'Skip',
-                        plot.filename,
-                        timestamp,
-                        `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.spreadsheetId}/edit`
-                    ];
+                    const voteData = {
+                        plotId: plot.id,
+                        voter: userName,
+                        vote: vote === 'yes' ? 'Yes' : vote === 'no' ? 'No' : 'Skip',
+                        filename: plot.filename,
+                        timestamp: timestamp
+                    };
 
-                    // Append to Google Sheets
-                    const response = await fetch(
-                        `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.spreadsheetId}/values/${SHEETS_CONFIG.range}:append?valueInputOption=RAW&key=${SHEETS_CONFIG.apiKey}`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                values: [rowData]
-                            })
-                        }
-                    );
+                    // Send to Apps Script
+                    const response = await fetch(SHEETS_CONFIG.appsScriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',  // Important for Apps Script
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(voteData)
+                    });
 
                     if (!response.ok) {
                         throw new Error('Failed to save vote');

@@ -605,30 +605,37 @@
                             </div>
 
                             <div 
-                                className="bg-gray-50 rounded-lg p-6 mb-6 flex items-center justify-center min-h-[500px] relative overflow-hidden"
+                                className="bg-gray-50 rounded-lg mb-6 relative overflow-hidden"
+                                style={{ height: '600px' }}
                                 onWheel={handleWheel}
-                                onMouseDown={handleMouseDown}
-                                onMouseMove={handleMouseMove}
-                                onMouseUp={handleMouseUp}
-                                onMouseLeave={handleMouseUp}
-                                style={{ cursor: imageZoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
                             >
                                 {imageUrl ? (
                                     <>
-                                        <img 
-                                            src={imageUrl} 
-                                            alt={`Plot ${currentPlot.id}`}
-                                            className="max-w-full max-h-[600px] object-contain select-none"
-                                            style={{
-                                                transform: `scale(${imageZoom}) translate(${imagePosition.x / imageZoom}px, ${imagePosition.y / imageZoom}px)`,
-                                                transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-                                            }}
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.nextSibling.style.display = 'block';
-                                            }}
-                                            draggable={false}
-                                        />
+                                        <div 
+                                            className="w-full h-full flex items-center justify-center"
+                                            onMouseDown={handleMouseDown}
+                                            onMouseMove={handleMouseMove}
+                                            onMouseUp={handleMouseUp}
+                                            onMouseLeave={handleMouseUp}
+                                            style={{ cursor: imageZoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+                                        >
+                                            <img 
+                                                src={imageUrl} 
+                                                alt={`Plot ${currentPlot.id}`}
+                                                className="select-none"
+                                                style={{
+                                                    maxWidth: '100%',
+                                                    maxHeight: '100%',
+                                                    objectFit: 'contain',
+                                                    transform: `scale(${imageZoom}) translate(${imagePosition.x / imageZoom}px, ${imagePosition.y / imageZoom}px)`,
+                                                    transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+                                                }}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                }}
+                                                draggable={false}
+                                            />
+                                        </div>
                                         <div className="absolute top-4 right-4 flex flex-col gap-2">
                                             <button
                                                 onClick={zoomIn}
@@ -659,21 +666,18 @@
                                         )}
                                     </>
                                 ) : (
-                                    <div className="text-center text-gray-500">
-                                        <p className="mb-4">No image path configured</p>
-                                        <button
-                                            onClick={() => setShowSettings(true)}
-                                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                                        >
-                                            Configure in Settings
-                                        </button>
+                                    <div className="w-full h-full flex items-center justify-center text-center text-gray-500">
+                                        <div>
+                                            <p className="mb-4">No image path configured</p>
+                                            <button
+                                                onClick={() => setShowSettings(true)}
+                                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                            >
+                                                Configure in Settings
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
-                                <div style={{display: 'none'}} className="text-center text-gray-500">
-                                    <p className="text-lg font-medium mb-2">Image not found</p>
-                                    <p className="text-sm">{currentPlot.filename}</p>
-                                    <p className="text-xs mt-2 text-gray-400">Check Settings for correct path</p>
-                                </div>
                             </div>
 
                             <div className="mb-6">

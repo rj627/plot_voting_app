@@ -229,10 +229,6 @@
                         body: JSON.stringify(voteData)
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Failed to save vote');
-                    }
-
                     // Update local state
                     const updatedPlots = [...plots];
                     const currentPlot = updatedPlots[currentIndex];
